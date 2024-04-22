@@ -6,14 +6,14 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const fs = require('fs');
 
-const photo = require('./models/Photo'); // oluşturduğum schemayı aldım
+const photo = require('./models/Photo');
 
 const app = express();
 
 //Database connect
 mongoose.connect('mongodb://localhost/pcat-test-db');
 
-//VIEW ENGİNE
+//VIEW ENGINE
 app.set('view engine', 'ejs');
 
 //MIDDLEWARE
@@ -47,7 +47,7 @@ app.post('/photos', async (req, res) => {
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
   }
-  // Yükeldiğimiz dosyayı yakalayıp isteiğimiz bilgileri değişkenleri aktarıyoruz
+  // Yükeldiğimiz dosyayı yakalayıp istediğimiz bilgileri değişkenleri aktarıyoruz
   let uploadeImage = req.files.image;
   let uploadPath = __dirname + '/public/uploads/' + uploadeImage.name;
 
