@@ -1,26 +1,35 @@
 {
   "name": "pcat",
   "version": "1.0.0",
-  "description": "PCAT Photo App",
+  "description": "Pcat photo app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuhgnc/PCAT.git"
   },
   "keywords": [
     "photo",
-    "app",
-    "camera"
+    "camera",
+    "app"
   ],
-  "author": "Berat Özfidan",
+  "author": "Nuhgnc",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nuhgnc/PCAT/issues"
+  },
+  "homepage": "https://github.com/nuhgnc/PCAT#readme",
   "devDependencies": {
-    "nodemon": "^3.1.0",
-    "prettier": "3.2.5"
+    "nodemon": "^2.0.15",
+    "prettier": "2.6.2"
   },
   "dependencies": {
-    "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "mongoose": "^8.3.2"
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "express-fileupload": "^1.5.0",
+    "mongoose": "^6.3.0"
   }
 }
