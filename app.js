@@ -1,22 +1,47 @@
 const express = require('express');
-const ejs = require('ejs');
+const mongoose = require('mongoose');
 const path = require('path');
+const ejs = require('ejs'); //view engine
+const Photo = require('./models/Photo');
+const { mongo } = require('mongoose');
 
 const app = express();
 
-// TEMPLAT ENGINE
+//Connect DB
+mongoose.connect('mongodb://localhost/pcat-test-db', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+//VIEW ENGINE
 app.set('view engine', 'ejs');
 
-// Middleware
-app.use(express.static('public'));
+//MIDDLEWARE
+app.use(express.static('public')); // Static dosyaları koyacağımız klasörü seçtik
+app.use(express.urlencoded({ extended: true })); // Body parser
+app.use(express.json()); // Body parser
 
 //ROUTES
-app.get('/', (req, res) => {
-  // res.sendFile(path.resolve(__dirname, 'temp/index.html'));
-  res.render('index');
+app.get('/', async (req, res) => {
+  const photos = await Photo.find({});
+  res.render('index', {
+    photos,
+  });
+});
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
+app.get('/add', (req, res) => {
+  res.render('add');
+});
+
+app.post('/photos', async (req, res) => {
+  await Photo.create(req.body);
+  res.redirect('/');
 });
 
 const port = 3000;
 app.listen(port, () => {
-  console.log(`Sunucu ${port} portunda başlatıldı.`);
+  console.log(`Server ${port} portunda dinleniyor`);
 });
