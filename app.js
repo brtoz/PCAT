@@ -42,18 +42,15 @@ app.get('/photo/:photo_id', async (req, res) => {
 });
 
 app.post('/photos', async (req, res) => {
-  //Eğer klasör yoksa oluşturacak
   const uploadDir = 'public/uploads';
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
   }
-  // Yükeldiğimiz dosyayı yakalayıp istediğimiz bilgileri değişkenleri aktarıyoruz
   let uploadeImage = req.files.image;
   let uploadPath = __dirname + '/public/uploads/' + uploadeImage.name;
 
-  // Yakaladığımız dosyayı .mv metodu ile yukarda belirlediğimiz path'a taşıyoruz. Dosya taşıma işlemi sırasında hata olmadı ise req.body ve içerisindeki image'nin dosya yolu ve adıyla beraber database kaydediyoruz
   uploadeImage.mv(uploadPath, async (err) => {
-    if (err) console.log(err);    // Bu kısımda önemli olan add.ejs'nin içerisine form elemanı olarak encType="multipart/form-data" atribute eklemek
+    if (err) console.log(err);   
     await photo.create({
       ...req.body,
       image: '/uploads/' + uploadeImage.name,
