@@ -1,63 +1,38 @@
-const express = require('express');
-const ejs = require('ejs');
-const mongoose = require('mongoose');
-const fileUpload = require('express-fileupload');
+const ejs = require('ejs'),
+      express = require('express'),
+      mongoose = require('mongoose'),
+      fileUpload = require('express-fileupload'),
+      methodOverride = require('method-override');
 
-const path = require('path');
-const fs = require('fs');
-
-const photo = require('./models/Photo');
+const photo = require('./models/Photo'), 
+      photoController = require('./controllers/photoController'),
+      pageController = require('./controllers/pageController');
 
 const app = express();
 
 //Database connect
 mongoose.connect('mongodb://localhost/pcat-test-db');
 
-//VIEW ENGINE
+//View Engine
 app.set('view engine', 'ejs');
 
-//MIDDLEWARE
-app.use(express.static('public')); // Static dosyaları koyacağımız klasörü seçtik
-app.use(express.urlencoded({ extended: true })); // Body parser
-app.use(express.json()); // Body parser
+//Middlewares
+app.use(express.static('public')); 
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
 app.use(fileUpload());
+app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
 
 //ROUTES
-app.get('/', async (req, res) => {
-  const photos = await photo.find({});
-  res.render('index', { photos });
-});
+app.get('/', photoController.getAllPhotos);
+app.get('/photo/:photo_id', photoController.getPhotoPage);
+app.get('/photo/edit/:photo_id', photoController.getEditPage);
+app.put('/photo/:photo_id', photoController.photoUpdate);
+app.post('/photos', photoController.photoUpload);
+app.delete('/photo/:photo_id', photoController.photoDelete);
 
-app.get('/about', (req, res) => {
-  res.render('about');
-});
-
-app.get('/add', (req, res) => {
-  res.render('add');
-});
-
-app.get('/photo/:photo_id', async (req, res) => {
-  const foundedPhoto = await photo.findById(req.params.photo_id);
-  res.render('photo', { photo: foundedPhoto });
-});
-
-app.post('/photos', async (req, res) => {
-  const uploadDir = 'public/uploads';
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-  }
-  let uploadeImage = req.files.image;
-  let uploadPath = __dirname + '/public/uploads/' + uploadeImage.name;
-
-  uploadeImage.mv(uploadPath, async (err) => {
-    if (err) console.log(err);   
-    await photo.create({
-      ...req.body,
-      image: '/uploads/' + uploadeImage.name,
-    });
-  });
-  res.redirect('/');
-});
+app.get('/about', pageController.getAboutPage);
+app.get('/add', pageController.getAddPage);
 
 const port = 3000;
 app.listen(port, () => {
